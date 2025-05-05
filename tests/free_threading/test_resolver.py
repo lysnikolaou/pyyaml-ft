@@ -1,6 +1,16 @@
 import re
 import yaml
 
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
+
+try:
+    from yaml import CDumper as Dumper
+except ImportError:
+    from yaml import Dumper
+
 from .utils import Dice, dice_representer
 
 
@@ -25,7 +35,7 @@ def test_default_implicit_resolvers_registered():
 - 2
 """
 
-    node = yaml.compose(yamlcode, Loader=yaml.CLoader)
+    node = yaml.compose(yamlcode, Loader=Loader)
     assert isinstance(node, yaml.SequenceNode)
     assert isinstance(node.value[0], yaml.SequenceNode)
     for scalar in node.value[0].value:
@@ -35,11 +45,11 @@ def test_default_implicit_resolvers_registered():
     assert node.value[1].tag == 'tag:yaml.org,2002:int'
 
 
-class ImplicitResolverLoader(yaml.CLoader):
+class ImplicitResolverLoader(Loader):
     pass
 
 
-class ImplicitResolverDumper(yaml.CDumper):
+class ImplicitResolverDumper(Dumper):
     pass
 
 
@@ -59,11 +69,11 @@ def test_implicit_resolver_registration():
         assert scalar.tag == '!dice'
 
 
-class PathResolverLoader(yaml.CLoader):
+class PathResolverLoader(Loader):
     pass
 
 
-class PathResolverDumper(yaml.CDumper):
+class PathResolverDumper(Dumper):
     pass
 
 

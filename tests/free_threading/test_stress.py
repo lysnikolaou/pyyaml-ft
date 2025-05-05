@@ -4,6 +4,16 @@ import threading
 
 import yaml
 
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
+
+try:
+    from yaml import CDumper as Dumper
+except ImportError:
+    from yaml import Dumper
+
 from .utils import Dice, dice_constructor
 
 # Different YAML content types for testing
@@ -131,11 +141,11 @@ rolls_no_resolver:
 ]
 
 
-class MyLoader(yaml.CLoader):
+class MyLoader(Loader):
     pass
 
 
-class MyDumper(yaml.CDumper):
+class MyDumper(Dumper):
     pass
 
 
